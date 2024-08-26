@@ -1,3 +1,8 @@
+// Importar funções do SDK Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyANYYHTOibuIzzJ6mF2i74etK60kFr-2ZM",
   authDomain: "cadastro-6f709.firebaseapp.com",
@@ -9,11 +14,9 @@ const firebaseConfig = {
 };
 
 // Inicialize o Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Referência ao serviço de banco de dados
-const database = firebase.database();
-const usersRef = database.ref('users');
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const usersRef = ref(database, 'users');
 
 // Função para salvar dados
 document.getElementById('userForm').addEventListener('submit', function(event) {
@@ -21,7 +24,8 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
     const name = document.getElementById('name').value;
 
     // Adiciona um novo usuário ao banco de dados
-    usersRef.push().set({
+    const newUserRef = push(usersRef);
+    set(newUserRef, {
         name: name
     });
 
@@ -30,7 +34,7 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
 });
 
 // Função para listar usuários salvos
-usersRef.on('value', function(snapshot) {
+onValue(usersRef, function(snapshot) {
     const usersList = document.getElementById('users');
     usersList.innerHTML = '';
     snapshot.forEach(function(childSnapshot) {
