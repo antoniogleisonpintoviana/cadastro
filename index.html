@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro com Firebase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro de Usuário</h1>
+        <form id="userForm">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+            <button type="submit">Salvar</button>
+        </form>
+        <div id="userList">
+            <h2>Usuários Salvos</h2>
+            <ul id="users"></ul>
+        </div>
+    </div>
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <!-- Your JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
