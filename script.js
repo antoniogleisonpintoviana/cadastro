@@ -69,7 +69,7 @@ usersRef.on('value', function(snapshot) {
 function editUser(userId, oldName) {
     const newName = prompt("Edite o nome do usuário:", oldName);
     if (newName) {
-        const userRef = database.ref(`users/${userId}`);
+        const userRef = usersRef.child(userId);
         userRef.set({
             name: newName
         }).then(() => {
@@ -82,7 +82,7 @@ function editUser(userId, oldName) {
 
 // Função para excluir dados
 function deleteUser(userId) {
-    const userRef = database.ref(`users/${userId}`);
+    const userRef = usersRef.child(userId);
     userRef.remove().then(() => {
         console.log("Usuário excluído com sucesso.");
     }).catch((error) => {
