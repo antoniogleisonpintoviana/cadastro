@@ -1,3 +1,7 @@
+// Importar funções do Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
 // Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyANYYHTOibuIzzJ6mF2i74etK60kFr-2ZM",
@@ -10,12 +14,10 @@ const firebaseConfig = {
   measurementId: "G-4422XQJ0VY"
 };
 
-// Inicialize o Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Referência ao serviço de banco de dados
-const database = firebase.database();
-const usersRef = database.ref('users');
+// Inicializar o Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const usersRef = ref(database, 'users');
 
 // Função para salvar dados
 document.getElementById('userForm').addEventListener('submit', function(event) {
@@ -23,8 +25,8 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
     const name = document.getElementById('name').value;
 
     // Adiciona um novo usuário ao banco de dados
-    const newUserRef = usersRef.push();
-    newUserRef.set({
+    const newUserRef = ref(usersRef.push());
+    set(newUserRef, {
         name: name
     }).then(() => {
         console.log("Usuário salvo com sucesso.");
@@ -37,7 +39,7 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
 });
 
 // Função para listar usuários salvos
-usersRef.on('value', function(snapshot) {
+onValue(usersRef, function(snapshot) {
     const usersList = document.getElementById('users');
     usersList.innerHTML = '';
     snapshot.forEach(function(childSnapshot) {
@@ -71,8 +73,8 @@ usersRef.on('value', function(snapshot) {
 function editUser(userId, oldName) {
     const newName = prompt("Edite o nome do usuário:", oldName);
     if (newName) {
-        const userRef = usersRef.child(userId);
-        userRef.set({
+        const userRef = ref(database, `users/${userId}`);
+        set(userRef, {
             name: newName
         }).then(() => {
             console.log("Usuário atualizado com sucesso.");
@@ -84,11 +86,10 @@ function editUser(userId, oldName) {
 
 // Função para excluir dados
 function deleteUser(userId) {
-    const userRef = usersRef.child(userId);
-    userRef.remove().then(() => {
+    const userRef = ref(database, `users/${userId}`);
+    remove(userRef).then(() => {
         console.log("Usuário excluído com sucesso.");
     }).catch((error) => {
         console.error("Erro ao excluir usuário:", error);
     });
 }
-
