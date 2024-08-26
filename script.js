@@ -6,6 +6,7 @@ import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/fi
 const firebaseConfig = {
   apiKey: "AIzaSyANYYHTOibuIzzJ6mF2i74etK60kFr-2ZM",
   authDomain: "cadastro-6f709.firebaseapp.com",
+  databaseURL: "https://cadastro-6f709-default-rtdb.firebaseio.com/", // Adicionando a URL do banco de dados
   projectId: "cadastro-6f709",
   storageBucket: "cadastro-6f709.appspot.com",
   messagingSenderId: "876404108526",
