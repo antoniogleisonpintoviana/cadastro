@@ -27,6 +27,10 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
     const newUserRef = push(usersRef);
     set(newUserRef, {
         name: name
+    }).then(() => {
+        console.log("Dados salvos com sucesso.");
+    }).catch((error) => {
+        console.error("Erro ao salvar dados:", error);
     });
 
     // Limpa o campo de entrada
@@ -43,4 +47,7 @@ onValue(usersRef, function(snapshot) {
         li.textContent = childData.name;
         usersList.appendChild(li);
     });
+}, (error) => {
+    console.error("Erro ao ler dados:", error);
 });
+
