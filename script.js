@@ -1,7 +1,3 @@
-// Importar funções do SDK Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-
 // Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyANYYHTOibuIzzJ6mF2i74etK60kFr-2ZM",
@@ -15,9 +11,11 @@ const firebaseConfig = {
 };
 
 // Inicialize o Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const usersRef = ref(database, 'users');
+firebase.initializeApp(firebaseConfig);
+
+// Referência ao serviço de banco de dados
+const database = firebase.database();
+const usersRef = database.ref('users');
 
 // Função para salvar dados
 document.getElementById('userForm').addEventListener('submit', function(event) {
@@ -25,8 +23,8 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
     const name = document.getElementById('name').value;
 
     // Adiciona um novo usuário ao banco de dados
-    const newUserRef = push(usersRef);
-    set(newUserRef, {
+    const newUserRef = usersRef.push();
+    newUserRef.set({
         name: name
     }).then(() => {
         console.log("Usuário salvo com sucesso.");
@@ -39,14 +37,14 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
 });
 
 // Função para listar usuários salvos
-onValue(usersRef, function(snapshot) {
+usersRef.on('value', function(snapshot) {
     const usersList = document.getElementById('users');
     usersList.innerHTML = '';
     snapshot.forEach(function(childSnapshot) {
         const childData = childSnapshot.val();
         const li = document.createElement('li');
         li.textContent = `${childData.name} `;
-        
+
         // Adicionar botão de excluir
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Excluir';
@@ -54,7 +52,7 @@ onValue(usersRef, function(snapshot) {
             deleteUser(childSnapshot.key);
         };
         li.appendChild(deleteButton);
-        
+
         // Adicionar botão de editar
         const editButton = document.createElement('button');
         editButton.textContent = 'Editar';
@@ -62,7 +60,7 @@ onValue(usersRef, function(snapshot) {
             editUser(childSnapshot.key, childData.name);
         };
         li.appendChild(editButton);
-        
+
         usersList.appendChild(li);
     });
 }, (error) => {
@@ -73,8 +71,8 @@ onValue(usersRef, function(snapshot) {
 function editUser(userId, oldName) {
     const newName = prompt("Edite o nome do usuário:", oldName);
     if (newName) {
-        const userRef = ref(database, `users/${userId}`);
-        set(userRef, {
+        const userRef = usersRef.child(userId);
+        userRef.set({
             name: newName
         }).then(() => {
             console.log("Usuário atualizado com sucesso.");
@@ -86,12 +84,11 @@ function editUser(userId, oldName) {
 
 // Função para excluir dados
 function deleteUser(userId) {
-    const userRef = ref(database, `users/${userId}`);
-    remove(userRef).then(() => {
+    const userRef = usersRef.child(userId);
+    userRef.remove().then(() => {
         console.log("Usuário excluído com sucesso.");
     }).catch((error) => {
         console.error("Erro ao excluir usuário:", error);
     });
 }
-
 
