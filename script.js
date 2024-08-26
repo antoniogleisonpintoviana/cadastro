@@ -1,6 +1,6 @@
 // Importar funções do Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -25,7 +25,7 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
     const name = document.getElementById('name').value;
 
     // Adiciona um novo usuário ao banco de dados
-    const newUserRef = ref(usersRef.push());
+    const newUserRef = push(usersRef);  // Correto para Firebase v9
     set(newUserRef, {
         name: name
     }).then(() => {
