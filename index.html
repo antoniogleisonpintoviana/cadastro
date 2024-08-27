@@ -89,15 +89,18 @@
             <ul id="users"></ul>
         </div>
     </div>
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
-    <script>
+
+    <!-- Importando Firebase como módulo -->
+    <script type="module">
+        // Importa as funções necessárias dos SDKs Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
+
         // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyANYYHTOibuIzzJ6mF2i74etK60kFr-2ZM",
             authDomain: "cadastro-6f709.firebaseapp.com",
-            databaseURL: "https://cadastro-6f709-default-rtdb.firebaseio.com/",
             projectId: "cadastro-6f709",
             storageBucket: "cadastro-6f709.appspot.com",
             messagingSenderId: "876404108526",
@@ -105,10 +108,11 @@
             measurementId: "G-4422XQJ0VY"
         };
 
-        // Inicializar o Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const usersRef = database.ref('users');
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+        const usersRef = ref(database, 'users');
 
         // Função para salvar dados
         document.getElementById('userForm').addEventListener('submit', function(event) {
@@ -116,8 +120,8 @@
             const name = document.getElementById('name').value;
 
             // Adiciona um novo usuário ao banco de dados
-            const newUserRef = usersRef.push();
-            newUserRef.set({
+            const newUserRef = ref(usersRef, Date.now().toString());
+            set(newUserRef, {
                 name: name
             }).then(() => {
                 console.log("Usuário salvo com sucesso.");
@@ -130,10 +134,10 @@
         });
 
         // Função para listar usuários salvos
-        usersRef.on('value', function(snapshot) {
+        onValue(usersRef, (snapshot) => {
             const usersList = document.getElementById('users');
             usersList.innerHTML = '';
-            snapshot.forEach(function(childSnapshot) {
+            snapshot.forEach((childSnapshot) => {
                 const childData = childSnapshot.val();
                 const li = document.createElement('li');
                 li.textContent = childData.name;
