@@ -73,13 +73,6 @@
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        button {
-            margin-left: 10px;
         }
     </style>
 </head>
@@ -143,54 +136,12 @@
             snapshot.forEach(function(childSnapshot) {
                 const childData = childSnapshot.val();
                 const li = document.createElement('li');
-                li.textContent = `${childData.name} `;
-
-                // Adicionar botão de excluir
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Excluir';
-                deleteButton.onclick = function() {
-                    deleteUser(childSnapshot.key);
-                };
-                li.appendChild(deleteButton);
-
-                // Adicionar botão de editar
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Editar';
-                editButton.onclick = function() {
-                    editUser(childSnapshot.key, childData.name);
-                };
-                li.appendChild(editButton);
-
+                li.textContent = childData.name;
                 usersList.appendChild(li);
             });
         }, (error) => {
             console.error("Erro ao ler dados:", error);
         });
-
-        // Função para atualizar dados
-        function editUser(userId, oldName) {
-            const newName = prompt("Edite o nome do usuário:", oldName);
-            if (newName) {
-                const userRef = usersRef.child(userId);
-                userRef.set({
-                    name: newName
-                }).then(() => {
-                    console.log("Usuário atualizado com sucesso.");
-                }).catch((error) => {
-                    console.error("Erro ao atualizar usuário:", error);
-                });
-            }
-        }
-
-        // Função para excluir dados
-        function deleteUser(userId) {
-            const userRef = usersRef.child(userId);
-            userRef.remove().then(() => {
-                console.log("Usuário excluído com sucesso.");
-            }).catch((error) => {
-                console.error("Erro ao excluir usuário:", error);
-            });
-        }
     </script>
 </body>
 </html>
